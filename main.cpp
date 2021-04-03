@@ -6,7 +6,7 @@
 int main(int argc, char* argv[]) {
   QApplication app(argc, argv);
 
-  TreeModelHierarchy model;
+  qt_hy::TreeModelHierarchy model;
 
   QTreeView view;
   view.setModel(&model);

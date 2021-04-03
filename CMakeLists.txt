@@ -16,5 +16,5 @@ FetchContent_MakeAvailable(hierarchy)
 
 add_executable(${PROJECT_NAME})
 target_sources(
-  ${PROJECT_NAME} PRIVATE main.cpp tree-model.cpp)
+  ${PROJECT_NAME} PRIVATE main.cpp tree-model.cpp main-window.cpp canvas.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets hierarchy)

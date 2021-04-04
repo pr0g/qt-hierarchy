@@ -145,12 +145,11 @@ namespace qt_hy {
       interaction_.collapsed_.end());
   }
 
-  void TreeModelHierarchy::selected(
-    const QModelIndex& current, const QModelIndex& previous) {
-    if (!current.isValid() || !previous.isValid()) {
+  void TreeModelHierarchy::selected(const QModelIndex& index) {
+    if (!index.isValid()) {
       return;
     }
 
-    interaction_.selected_ = handle_from_id(current.internalId());
+    interaction_.selected_ = handle_from_id(index.internalId());
   }
 } // namespace qt_hy

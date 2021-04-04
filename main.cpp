@@ -14,6 +14,7 @@ int main(int argc, char* argv[]) {
   auto* view = new QTreeView();
   view->setModel(&model);
   view->expandAll(); // start expanded
+  view->setCurrentIndex(QModelIndex());
 
   QObject::connect(
     view, &QTreeView::collapsed, &model, &qt_hy::TreeModelHierarchy::collapsed);
@@ -36,7 +37,6 @@ int main(int argc, char* argv[]) {
   QObject::connect(
     view->selectionModel(), &QItemSelectionModel::currentChanged, canvas,
     QOverload<>::of(&qt_hy::Canvas::update));
-
   QObject::connect(
     view->selectionModel(), &QItemSelectionModel::currentChanged, &model,
     &qt_hy::TreeModelHierarchy::selected);

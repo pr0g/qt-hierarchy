@@ -28,9 +28,18 @@ int main(int argc, char* argv[]) {
   layout->addWidget(canvas);
 
   QObject::connect(
-    view, &QTreeView::collapsed, canvas, QOverload<>::of(&qt_hy::Canvas::update));
+    view, &QTreeView::collapsed, canvas,
+    QOverload<>::of(&qt_hy::Canvas::update));
   QObject::connect(
-    view, &QTreeView::expanded, canvas, QOverload<>::of(&qt_hy::Canvas::update));
+    view, &QTreeView::expanded, canvas,
+    QOverload<>::of(&qt_hy::Canvas::update));
+  QObject::connect(
+    view->selectionModel(), &QItemSelectionModel::currentChanged, canvas,
+    QOverload<>::of(&qt_hy::Canvas::update));
+
+  QObject::connect(
+    view->selectionModel(), &QItemSelectionModel::currentChanged, &model,
+    &qt_hy::TreeModelHierarchy::selected);
 
   qt_hy::MainWindow window;
   window.setCentralWidget(new QWidget);

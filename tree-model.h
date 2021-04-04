@@ -26,6 +26,7 @@ namespace qt_hy {
 
     void collapsed(const QModelIndex& index);
     void expanded(const QModelIndex& index);
+    void selected(const QModelIndex& current, const QModelIndex& previous);
 
     thh::container_t<hy::entity_t> entities_;
     std::vector<thh::handle_t> root_handles_;

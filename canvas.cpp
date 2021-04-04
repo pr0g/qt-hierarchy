@@ -23,10 +23,12 @@ namespace qt_hy {
         const QColor col = selected   ? QColor(0xffffff00)
                         : !collapsed ? QColor(0xffffffff)
                                      : QColor(0xff00ffff);
+        painter.setPen(col);
         painter.drawText(2 + indent * 20, 14 + level * 14, entry.c_str());
       };
 
     const auto display_connection = [&painter](int level, int indent) {
+      painter.setPen(QColor(0xffffffff));
       painter.drawText(2 + indent * 20, 14 + level * 14, "|");
     };
 

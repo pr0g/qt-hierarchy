@@ -1,6 +1,18 @@
 #include "tree-model.h"
 
 namespace qt_hy {
+  static thh::handle_t handle_from_id(const quintptr id) {
+    thh::handle_t handle;
+    memcpy(&handle, &id, sizeof(id));
+    return handle;
+  }
+
+  static quintptr id_from_handle(const thh::handle_t handle) {
+    quintptr id;
+    memcpy(&id, &handle, sizeof(handle));
+    return id;
+  }
+
   TreeModelHierarchy::TreeModelHierarchy(QObject* parent)
     : QAbstractItemModel(parent) {
     root_handles_ = demo::create_sample_entities(entities_);
@@ -17,14 +29,11 @@ namespace qt_hy {
       return QVariant();
     }
 
-    auto id = index.internalId();
-    thh::handle_t handle;
-    memcpy(&handle, &id, sizeof(id));
-
     QString name;
-    entities_.call(handle, [&name](const hy::entity_t& entity) {
-      name = QString(entity.name_.c_str());
-    });
+    entities_.call(
+      handle_from_id(index.internalId()), [&name](const hy::entity_t& entity) {
+        name = QString(entity.name_.c_str());
+      });
 
     return name;
   }
@@ -55,20 +64,15 @@ namespace qt_hy {
     if (!parent.isValid()) {
       handles = root_handles_;
     } else {
-      auto id = parent.internalId();
-      thh::handle_t parent_handle;
-      memcpy(&parent_handle, &id, sizeof(id));
       entities_.call(
-        parent_handle, [&handles](const hy::entity_t& parent_entity) {
+        handle_from_id(parent.internalId()),
+        [&handles](const hy::entity_t& parent_entity) {
           handles = parent_entity.children_;
         });
     }
 
     if (row < handles.size()) {
-      const thh::handle_t handle = handles[row];
-      quintptr id;
-      memcpy(&id, &handle, sizeof(handle));
-      return createIndex(row, column, id);
+      return createIndex(row, column, id_from_handle(handles[row]));
     }
 
     return QModelIndex();
@@ -78,29 +82,27 @@ namespace qt_hy {
     if (!index.isValid()) {
       return QModelIndex();
     }
-    auto id = index.internalId();
-    thh::handle_t child_handle;
-    memcpy(&child_handle, &id, sizeof(id));
 
-    thh::handle_t parent;
-    entities_.call(child_handle, [&parent](const hy::entity_t& entity) {
-      parent = entity.parent_;
+    const auto child_handle = handle_from_id(index.internalId());
+    thh::handle_t parent_handle;
+    entities_.call(child_handle, [&parent_handle](const hy::entity_t& entity) {
+      parent_handle = entity.parent_;
     });
 
-    if (parent == thh::handle_t(-1, -1)) {
+    if (parent_handle == thh::handle_t(-1, -1)) {
       return QModelIndex();
     }
 
     int offset = 0;
-    entities_.call(parent, [&offset, child_handle](const hy::entity_t& entity) {
-      offset = std::find(
-                 entity.children_.begin(), entity.children_.end(), child_handle)
-             - entity.children_.begin();
-    });
+    entities_.call(
+      parent_handle, [&offset, child_handle](const hy::entity_t& entity) {
+        offset =
+          std::find(
+            entity.children_.begin(), entity.children_.end(), child_handle)
+          - entity.children_.begin();
+      });
 
-    quintptr pid;
-    memcpy(&pid, &parent, sizeof(parent));
-    return createIndex(offset, 0, pid);
+    return createIndex(offset, 0, id_from_handle(parent_handle));
   }
 
   int TreeModelHierarchy::rowCount(const QModelIndex& parent) const {
@@ -109,11 +111,9 @@ namespace qt_hy {
     }
     std::vector<thh::handle_t> handles;
     if (parent.isValid()) {
-      auto id = parent.internalId();
-      thh::handle_t parent_handle;
-      memcpy(&parent_handle, &id, sizeof(id));
       entities_.call(
-        parent_handle, [&handles](const hy::entity_t& parent_entity) {
+        handle_from_id(parent.internalId()),
+        [&handles](const hy::entity_t& parent_entity) {
           handles = parent_entity.children_;
         });
     } else {

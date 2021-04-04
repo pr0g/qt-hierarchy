@@ -15,6 +15,7 @@ int main(int argc, char* argv[]) {
   view->setModel(&model);
 
   auto* canvas = new qt_hy::Canvas();
+  canvas->treeModel_ = &model;
 
   auto* layout = new QHBoxLayout();
   layout->addWidget(view);

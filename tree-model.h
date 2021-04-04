@@ -24,7 +24,6 @@ namespace qt_hy {
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     int columnCount(const QModelIndex& parent = QModelIndex()) const override;
 
-  private:
     thh::container_t<hy::entity_t> entities_;
     std::vector<thh::handle_t> root_handles_;
     hy::interaction_t interaction_;

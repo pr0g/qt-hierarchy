@@ -125,4 +125,24 @@ namespace qt_hy {
   int TreeModelHierarchy::columnCount(const QModelIndex& parent) const {
     return 1;
   }
+
+  void TreeModelHierarchy::collapsed(const QModelIndex& index) {
+    if (!index.isValid()) {
+      return;
+    }
+
+    interaction_.collapsed_.push_back(handle_from_id(index.internalId()));
+  }
+
+  void TreeModelHierarchy::expanded(const QModelIndex& index) {
+    if (!index.isValid()) {
+      return;
+    }
+
+    interaction_.collapsed_.erase(
+      std::remove(
+        interaction_.collapsed_.begin(), interaction_.collapsed_.end(),
+        handle_from_id(index.internalId())),
+      interaction_.collapsed_.end());
+  }
 } // namespace qt_hy

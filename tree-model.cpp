@@ -16,7 +16,6 @@ namespace qt_hy {
   TreeModelHierarchy::TreeModelHierarchy(QObject* parent)
     : QAbstractItemModel(parent) {
     root_handles_ = demo::create_sample_entities(entities_);
-    interaction_.neighbors_ = root_handles_;
   }
 
   QVariant TreeModelHierarchy::data(const QModelIndex& index, int role) const {
@@ -130,7 +129,7 @@ namespace qt_hy {
       return;
     }
 
-    interaction_.collapsed_.push_back(handle_from_id(index.internalId()));
+    interaction_.collapse(handle_from_id(index.internalId()), entities_);
   }
 
   void TreeModelHierarchy::expanded(const QModelIndex& index) {
@@ -138,11 +137,7 @@ namespace qt_hy {
       return;
     }
 
-    interaction_.collapsed_.erase(
-      std::remove(
-        interaction_.collapsed_.begin(), interaction_.collapsed_.end(),
-        handle_from_id(index.internalId())),
-      interaction_.collapsed_.end());
+    interaction_.expand(handle_from_id(index.internalId()));
   }
 
   void TreeModelHierarchy::selected(const QModelIndex& index) {
@@ -150,6 +145,7 @@ namespace qt_hy {
       return;
     }
 
-    interaction_.selected_ = handle_from_id(index.internalId());
+    interaction_.select(
+      handle_from_id(index.internalId()), entities_, root_handles_);
   }
 } // namespace qt_hy

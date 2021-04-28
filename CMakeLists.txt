@@ -11,7 +11,7 @@ include(FetchContent)
 FetchContent_Declare(
     hierarchy
     GIT_REPOSITORY https://github.com/pr0g/hierarchy.git
-    GIT_TAG        51ed7524fa5e8c04eab7b16a8cc51d372578be7c)
+    GIT_TAG        49703301f6e922733a14666562ef8f954b9974b7)
 FetchContent_MakeAvailable(hierarchy)
 
 add_executable(${PROJECT_NAME})

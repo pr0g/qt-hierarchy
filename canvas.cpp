@@ -15,17 +15,15 @@ namespace qt_hy {
     QPainter painter(this);
     painter.drawRect(QRect(0, 0, width(), height()));
 
-    const auto display =
-      [treeModel = treeModel_, &painter](
-        int level, int indent, const thh::handle_t entity_handle, bool selected,
-        bool collapsed, bool has_children, const std::string& name) {
-        const auto entry = std::string("|-- ") + name;
-        const QColor col = selected   ? QColor(0xffffff00)
-                        : !collapsed ? QColor(0xffffffff)
-                                     : QColor(0xff00ffff);
-        painter.setPen(col);
-        painter.drawText(2 + indent * 20, 14 + level * 14, entry.c_str());
-      };
+    const auto display = [treeModel = treeModel_,
+                          &painter](const hy::display_info_t& di) {
+      const auto entry = std::string("|-- ") + di.name;
+      const QColor col = di.selected   ? QColor(0xffffff00)
+                       : !di.collapsed ? QColor(0xffffffff)
+                                       : QColor(0xff00ffff);
+      painter.setPen(col);
+      painter.drawText(2 + di.indent * 20, 14 + di.level * 14, entry.c_str());
+    };
 
     const auto display_connection = [&painter](int level, int indent) {
       painter.setPen(QColor(0xffffffff));
